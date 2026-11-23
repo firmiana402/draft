@@ -11939,7 +11939,7 @@ namespace std::linalg {
       using @\libmember{layout_type}{layout_blas_packed::mapping}@ = layout_blas_packed;
 
       // \ref{linalg.layout.packed.cons}, constructors
-      constexpr mapping() noexcept = default;
+      constexpr mapping() noexcept;
       constexpr mapping(const mapping&) noexcept = default;
       constexpr mapping(const extents_type&) noexcept;
       template<class OtherExtents>
@@ -12007,8 +12007,10 @@ extents_type::static_extent(0) == extents_type::static_extent(1)
 \end{codeblock}
 is \tcode{true}, and
 \item
-if \tcode{Extents::rank_dynamic() == 0} is \tcode{true},
-let $N_s$ be equal to \tcode{Extents::static_extent(0)}; then,
+if \tcode{Extents::rank_dynamic() < 2} is \tcode{true},
+let $N_s$ be equal to
+\tcode{Extents::static_extent(0)} if it is not \tcode{dynamic_extent},
+and \tcode{Extents::static_extent(1)} otherwise; then,
 $N_s \times (N_s + 1)$ is representable as a value of type \tcode{index_type}.
 \end{itemize}
 
@@ -12018,6 +12020,21 @@ that models \libconcept{regular} for each \tcode{T}, \tcode{SO}, and \tcode{E}.
 \end{itemdescr}
 
 \rSec3[linalg.layout.packed.cons]{Constructors}
+
+\indexlibraryctor{layout_blas_packed::mapping}%
+\begin{itemdecl}
+constexpr mapping() noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+If \tcode{extents_type::rank_dynamic() == 1} is \tcode{true},
+direct-non-list-initializes \exposid{extents_} with
+\tcode{extents_type::static_extent($r$)},
+where $r$ is the rank index of the static extent of \tcode{extents_type}.
+Otherwise, value-initializes \exposid{extents_}.
+\end{itemdescr}
 
 \indexlibraryctor{layout_blas_packed::mapping}%
 \begin{itemdecl}
